@@ -1,0 +1,59 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<div class="container ">
+    
+    <form action={% url "pes_leite" %} method="POST">
+        {% csrf_token %}
+        <div class="row container mt-5">
+            
+            <div class="col">
+                <div class="row">
+                
+                    <div class="col">
+                        <input required name="pesquisa" type="text" class=" form-control form-control-sm" id="quantidade" placeholder="Digite aqui...">
+                    </div>
+                
+                </div>
+            </div>
+            <div class="col">
+                <select class="form-select" name="tipo_pesquisa" aria-label="Pesquisar por">
+                    <option selected value="tudo"> Pesquisar por Tudo</option>
+                    <option value="id">ID</option>
+                    <option value="data">Data</option>
+                    <option value="quantidade">Quantidade</option>
+                </select>
+            </div>
+            <div class="col">
+                <button type="submit" class="btn btn-warning">Pesquisar</button>
+            </div>
+        </div>   
+     </form>
+        
+</div>
+
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Quantidade</th>
+            <th scope="col">Data</th>
+            <th scope="col">Alterar</th>
+            <th scoper="col"> Deletar</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for leite in leites  %}
+                <tr>
+                    <th scope="row">{{leite.id}}</th>
+                    <td>{{leite.quantidade}}</td>
+                    <td>{{leite.data}}</td>
+                    <td>  <a href="{% url 'upd_leite' leite.id %}"> <button class="btn btn-primary">Alterar</button> </a></td>
+                    <td> <a href="{% url 'del_leite' leite.id %}"> <button  class="btn btn-danger">Deletar</button> </a> </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

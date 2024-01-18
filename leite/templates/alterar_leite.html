@@ -1,0 +1,27 @@
+{% extends "main.html" %}
+
+{%block content%}
+    
+            {%if leite != None%}
+                <form action="{% url "upd_leite" leite.id %}" method="POST">
+                        {% csrf_token %}
+                    <div class="container">
+
+                        <div class="col-sm-3">
+                            <div class="mb-3">
+                                <label for="quantidade" class="form-label">Quantidade</label>
+                                <input  value = "{{leite.quantidade}}"name="quantidade" type="number" class=" form-control form-control-sm" id="quantidade" placeholder="Quantidade de leite...">
+                            </div>
+                            <div class="mb-3">
+                                <label for="quantidade" class="form-label">Data</label>
+                                <input value="{{leite.data|date:'Y-m-d'}}"type="date" name="data" class=" form-control form-control-sm" id="quantidade" placeholder="Data da entrega do leite...">
+                            </div>
+                            <button type="submit" class="btn btn-info">Alterar</button>
+                        </div>
+
+                    </div>
+            {% endif %}
+
+    </form>
+{% endblock %}
+

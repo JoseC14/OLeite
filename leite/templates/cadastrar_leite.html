@@ -1,0 +1,35 @@
+{% extends 'main.html' %}
+
+{%block content%}
+<form action="{% url "cad_leite" %}" method="POST">
+    {% csrf_token %}
+    <div class="container text-center mt-4">
+
+
+        <div class="col-sm-3">
+            <div class="mb-3">
+                <label for="quantidade" class="form-label">Quantidade</label>
+                <input  name="quantidade" type="number" class=" form-control form-control-sm" id="quantidade" placeholder="Quantidade de leite...">
+            </div>
+            <div class="mb-3">
+                <label for="quantidade" class="form-label">Data</label>
+                <input type="date" name="data"class=" form-control form-control-sm" id="quantidade" placeholder="Data da entrega do leite...">
+            </div>
+            <button type="submit" class="btn btn-success">Cadastrar</button>
+        </div>
+
+    </div>
+</form>
+
+{% if msg_sucesso != None %}
+    <div class="alert alert-success mt-4 container text-center" role="alert">
+        {{ msg_sucesso }}
+    </div> 
+{% endif %}
+
+{% if erro != None %}
+<div class="alert alert-danger mt-4 container text-center" role="alert">
+    {{ erro }}
+</div> 
+{% endif %}
+{%endblock%}
