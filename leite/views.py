@@ -3,7 +3,8 @@ from django.db import IntegrityError
 from .models import Leite
 from datetime import datetime
 from django.db.models import Q
-
+from .models import Soma
+from django.db.models import Sum
 
 def home(request):
     if request.method == 'GET':
@@ -36,9 +37,16 @@ def somar_leite(request):
     elif request.method == 'POST':
         de = request.POST.get('de')
         ate = request.POST.get('ate')
+        preco = request.POST.get('preco')
         leites = Leite.objects.filter(data__range=[de,ate])  
-        print(f"LEITEEEEEE{leites}")  
-        return render(request,'somar.html',{'leites':leites})
+        leite_soma = leites.aggregate(soma = Sum('quantidade'))['soma']
+        total = leite_soma*int(preco) 
+        return render(request,'somar.html',{'leites':leites,
+                                            'leite_soma':leite_soma,
+                                            'total':total,
+                                            'preco':preco,
+                                            'de':de,
+                                            'ate':ate})
     
 
 def deletar_leite(request,pk_id):
@@ -61,6 +69,7 @@ def alterar_leite(request,pk_id):
         
         leite.save()    
         return redirect('ger_leite')
+
 
 def pesquisar_leite(request):
     if request.method == 'POST':
@@ -89,3 +98,26 @@ def pesquisar_leite(request):
         
         
         return render(request,'gerenciar_leite.html',{'leites':leites})
+    
+
+def cadastrar_soma(request):
+    if request.method == 'POST':
+        leites = request.POST.getlist('leites[]')
+        total_litros = request.POST.get('total_litro')
+        total = request.POST.get('total')
+        preco = request.POST.get('preco')
+        de = request.POST.get('de')
+        ate = request.POST.get('ate')
+
+
+        soma = Soma(quantidade=total_litros, total=total, preco_litro=preco, data_inicio=de, data_fim=ate)
+        soma.save()
+
+        for id in leites:
+            leite = Leite.objects.filter(id=id)
+            leite.id_soma = soma.id
+            leite.update() 
+        
+        return redirect('sum_leite')
+
+

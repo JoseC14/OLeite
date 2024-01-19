@@ -5,7 +5,8 @@ class Soma(models.Model):
     quantidade = models.IntegerField()
     preco_litro = models.DecimalField(max_digits=10, decimal_places=2)
     total = models.DecimalField(max_digits=10, decimal_places=2)
-
+    data_inicio = models.DateField()
+    data_fim = models.DateField()
 
 
 class Leite(models.Model):

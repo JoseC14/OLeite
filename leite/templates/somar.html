@@ -1,7 +1,7 @@
 {% extends 'main.html' %}
 
 {%block content %}
-<form action="{% url "sum_leite" %}" method="POST">
+<form action="{% url 'sum_leite' %}" method="POST">
     {% csrf_token %}
     <div class="container">
 
@@ -10,34 +10,53 @@
         
             <div class="col">
                 <label for="quantidade" class="form-label">De</label>
-                <input name="de" type="date" class=" form-control form-control-sm" id="quantidade" placeholder="Quantidade de leite...">
+                <input name="de" required type="date" class=" form-control form-control-sm" id="quantidade" >
             </div>
 
             <div class="col">
                 <label for="quantidade" class="form-label">Até</label>
-                <input name="ate" type="date" class=" form-control form-control-sm" id="quantidade" placeholder="Data da entrega do leite...">
+                <input name="ate" required type="date" class=" form-control form-control-sm" id="quantidade" >
             </div>
+
+            <div class="col">
+                <label for="preco" class="form-label">Preço por Litro</label>
+                <input name="preco" type="number" class=" form-control form-control-sm" id="quantidade" >
+            </div>
+            
             
 
             <div class="col">
                 <button type="submit" class="btn btn-success mt-4">Somar</button>
             </div>
-            
+</form>        
 
             {% if leites != None %}
-                <button type="submit" class="btn btn-success mt-4">Registrar</button>
+                <form action="{% url 'cad_soma'%}" method="POST">
+                    {% csrf_token %}
+                    {% for leite in leites %}
+                        <input type="hidden" name="leites[]" value="{{leite.id}}">
+                    {% endfor %}
+
+                    <input type="hidden" name="total_litro" value="{{leite_soma}}">
+                    <input type="hidden" name="total" value="{{total}}">
+                    <input type="hidden" name="preco" value="{{preco}}">
+                    <input type="hidden" name="de" value="{{de}}">
+                    <input type="hidden" name="ate" value="{{ate}}">
+                    
+                   <button type="submit" class="btn btn-success mt-4">Registrar</button>
+                </form>
             {% endif %}
         </div>
 
         {% if leites != None %}
+            <p>Total de Litros: {{leite_soma}}</p>
+            <p>Total: {{total}}</p>
             <table class="table">
                 <thead>
                 <tr>
                     <th scope="col">ID</th>
                     <th scope="col">Quantidade</th>
                     <th scope="col">Data</th>
-                    <th scope="col">Alterar</th>
-                    <th scoper="col"> Deletar</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -52,6 +71,6 @@
             </table>
         {% endif %}
     </div>
-</form>
+
 
 {% endblock %}
