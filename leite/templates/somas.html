@@ -1,0 +1,105 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<div class="container ">
+    
+    <form action="{% url 'somas' %}" method="POST">
+        {% csrf_token %}
+        <div class="row container mt-5">
+            
+            <div class="col">
+                <div class="row">
+                
+                    <div class="col">
+                        <input required name="pesquisa" type="text" class=" form-control form-control-sm" id="quantidade" placeholder="Digite aqui...">
+                    </div>
+                
+                </div>
+            </div>
+            <div class="col">
+                <select class="form-select" name="tipo_pesquisa" aria-label="Pesquisar por">
+                    <option selected value="tudo"> Pesquisar por Tudo</option>
+                    <option value="id">ID</option>
+                    <option value="quantidade">Quantidade</option>
+                    <option value="preco">Preço por Litro</option>
+                    <option value="total">Total</option>
+                    <option value="data_inicio">Inicio</option>
+                    <option value="data_fim">Fim</option>
+                </select>
+            </div>
+            <div class="col">
+                <button type="submit" class="btn btn-warning">Pesquisar</button>
+            </div>
+        </div>   
+     </form>
+        
+</div>
+    {% if somas != None %}
+        <div class="container">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Quantidade</th>
+                    <th scope="col">Preço por Litro</th>
+                    <th scope="col">Total</th>
+                    <th scope="col">Inicio</th>
+                    <th scope="col">Fim</th>
+                    <th scope="col">Ver registro</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for soma in somas  %}
+                        <tr>
+                            <th scope="row" >{{soma.id}}</th>
+                            <td>{{soma.quantidade}}</td>
+                            <td>{{soma.preco_litro}}</td>
+                            <td>{{soma.total}}</td>
+                            <td>{{soma.data_inicio}}</td>
+                            <td>{{soma.data_fim}}</td>
+                            <td>
+
+                                <button type="button" id="registros" onclick="populaTabela('{{soma.id}}')" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registro">
+                                    Ver registro
+                                  </button>
+                                  
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+
+
+<!--   REGISTRO   -->
+
+<div class="modal fade" id="registro" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Registro</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Quantidade</th>
+                        <th scope="col">Data</th>
+                    </tr>
+                </thead>
+                <tbody id="corpo-tabela">
+
+                </tbody>
+            </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+{% load static %}
+<script src="{% static 'scripts.js' %}"></script>
+{% endblock %}

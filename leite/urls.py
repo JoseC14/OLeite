@@ -10,5 +10,7 @@ urlpatterns = [
     path('deletarleite/<int:pk_id>', views.deletar_leite, name='del_leite'),
     path('alterarleite/<int:pk_id>', views.alterar_leite, name='upd_leite'),
     path('pesquisaleite/',views.pesquisar_leite,name='pes_leite'),
-    path('cadastrarsoma/',views.cadastrar_soma,name='cad_soma')
+    path('cadastrarsoma/',views.cadastrar_soma,name='cad_soma'),
+    path('somas/',views.somas,name='somas'),
+    path('leites/', views.dados_registro, name='ver_reg')
 ]

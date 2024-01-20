@@ -5,6 +5,7 @@ from datetime import datetime
 from django.db.models import Q
 from .models import Soma
 from django.db.models import Sum
+from django.http import JsonResponse
 
 def home(request):
     if request.method == 'GET':
@@ -108,16 +109,52 @@ def cadastrar_soma(request):
         preco = request.POST.get('preco')
         de = request.POST.get('de')
         ate = request.POST.get('ate')
+        soma_check = Soma.objects.filter(Q(data_inicio = de) | Q(data_fim=ate))
 
-
+        if soma_check.exists():
+            return render(request,'somar.html',{'msg_erro':'Registro de leite já existe no banco!'})
+        
         soma = Soma(quantidade=total_litros, total=total, preco_litro=preco, data_inicio=de, data_fim=ate)
         soma.save()
-
         for id in leites:
-            leite = Leite.objects.filter(id=id)
-            leite.id_soma = soma.id
-            leite.update() 
+            leite = Leite.objects.get(id=id)
+            leite.soma = soma
+            leite.save() 
         
-        return redirect('sum_leite')
+        return render(request,'somar.html',{'msg_sucesso':'Registrado!'})
 
 
+def somas(request):
+    if request.method == 'GET':        
+        somas = Soma.objects.all()
+        return render(request,'somas.html',{'somas':somas})
+    if request.method == 'POST':
+        pesquisa = request.POST.get('pesquisa')
+        tipo_pesquisa = request.POST.get('tipo_pesquisa')
+
+        if tipo_pesquisa == 'all':
+            somas = Soma.objects.filter(Q(id__contais=pesquisa) |
+                                        Q(quantidade__contains=pesquisa) |
+                                        Q(total__contains=pesquisa) |
+                                        Q(preco_litro__contains=pesquisa) |
+                                        Q(data_inicio__contains=pesquisa) |
+                                        Q(data_fim__contains=pesquisa))
+        elif tipo_pesquisa == 'id':
+            somas = Soma.objects.filter(id__contains=pesquisa)
+        elif tipo_pesquisa == 'quantidade':
+            somas = Soma.objects.filter(quantidade__contains=pesquisa)
+        elif tipo_pesquisa == 'total':
+            somas = Soma.objects.filter(total__contains=pesquisa)
+        elif tipo_pesquisa == 'preco_litro':
+            somas = Soma.objects.filter(preco_litro__contains=pesquisa)
+        elif tipo_pesquisa == 'data_inicio':
+            somas = Soma.objects.filter(data_inicio__contains=pesquisa)
+        elif tipo_pesquisa == 'data_fim':
+            somas = Soma.objects.filter(data_fim__contains=pesquisa)
+        
+        return render(request,'somas.html',{'somas':somas})
+    
+
+def dados_registro(request):
+    data = list(Leite.objects.values())
+    return JsonResponse(data,safe=False)
