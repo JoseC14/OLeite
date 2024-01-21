@@ -30,3 +30,17 @@ function populaTabela(id_soma){
 
 
 }
+
+function passaTabela(){
+    let form = document.getElementById('form-rel')
+    event.preventDefault()
+    console.log('passando tabela...')
+    let tabela = document.getElementById('tabela').innerHTML
+    area_texto = document.getElementById('content-table')
+    console.log("teste")
+    let css = "<style>    .table{border: 1px solid black;}tr{   text-align: center;}</style>\n"
+    area_texto.value = css
+    area_texto.value += tabela
+    console.log(area_texto.value)
+    form.submit()
+}

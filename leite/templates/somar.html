@@ -44,7 +44,7 @@
 
 {% if leites != None %}
     <div class="container">
-        <form action="{% url 'cad_soma'%}" method="POST">
+        <form action="{% url 'cad_soma'%}" method="POST" >
             {% csrf_token %}
             {% for leite in leites %}
                 <input type="hidden" name="leites[]" value="{{leite.id}}">

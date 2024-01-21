@@ -5,7 +5,11 @@ from datetime import datetime
 from django.db.models import Q
 from .models import Soma
 from django.db.models import Sum
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
+from . import utils
+from app.settings import BASE_DIR
+from os import path
+
 
 def home(request):
     if request.method == 'GET':
@@ -77,7 +81,7 @@ def pesquisar_leite(request):
         pesquisa = request.POST.get('pesquisa')
         tipo_pesquisa = request.POST.get('tipo_pesquisa')
 
-        if tipo_pesquisa == 'all':
+        if tipo_pesquisa == 'tudo':
             leites = Leite.objects.filter(
                     Q(quantidade__icontains=pesquisa) |
                     Q(id__icontains=pesquisa) |
@@ -133,7 +137,7 @@ def somas(request):
         tipo_pesquisa = request.POST.get('tipo_pesquisa')
 
         if tipo_pesquisa == 'all':
-            somas = Soma.objects.filter(Q(id__contais=pesquisa) |
+            somas = Soma.objects.filter(Q(id__contains=pesquisa) |
                                         Q(quantidade__contains=pesquisa) |
                                         Q(total__contains=pesquisa) |
                                         Q(preco_litro__contains=pesquisa) |
@@ -158,3 +162,31 @@ def somas(request):
 def dados_registro(request):
     data = list(Leite.objects.values())
     return JsonResponse(data,safe=False)
+
+
+def deletar_soma(request, pk_id):
+    
+    leites = Leite.objects.filter(soma=pk_id)
+    for leite in leites:
+        leite.soma = None
+        leite.save()
+
+    soma = Soma.objects.filter(id=pk_id)
+    soma.delete() 
+    return redirect('somas')
+
+
+def gerar_relatorio(request):
+
+    if request.method == 'POST':
+        
+        caminho = path.join(BASE_DIR, "leite/templates/ver_registro.html")
+        tabela = request.POST.get('tabela')
+        template_w = open(caminho, "w")       
+        
+        template_w.write(tabela)
+        template_w.close()
+
+        pdf = utils.gerar_relatorio(caminho)
+        
+        return HttpResponse(pdf,content_type="application/pdf")
