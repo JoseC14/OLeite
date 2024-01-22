@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'app',
     'leite',
     'corsheaders',
 ]
@@ -118,6 +119,7 @@ STATIC_URL = 'static/'
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "leite/static"),
+    os.path.join(BASE_DIR, "app/static"),
 )
 
 

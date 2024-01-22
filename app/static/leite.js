@@ -1,4 +1,3 @@
-
 function populaTabela(id_soma){
     console.log(id_soma)
 
@@ -53,54 +52,19 @@ function deletaDados(id){
     window.location.href = '/deletarleite/'+id
   }
 }
-  $(document).ready(function () {
-    $('.dropdown-toggle').dropdown();
-  });
-  categorias = new Array()
-  dados_leite = new Array()
-  let registros = fetch("http://127.0.0.1:8000/registros/").then((data)=>{
 
-    return data.json()
-  }).then((registros)=>{
-    registros.forEach(element => {
-        categorias.push(element['data_fim'])
-        dados_leite.push(element['total'])
-        console.log(categorias)
-        console.log(dados_leite)
-    })
-  })
-  var options = {
-    series: [{
-      name: "Leites por Registro",
-      data: dados_leite
-  }],
-    chart: {
-    height: 350,
-    type: 'line',
-    zoom: {
-      enabled: false
+function formataPesquisa(){
+    var tipo_pesquisa = document.getElementById('tipo_pesquisa')
+    if(tipo_pesquisa.value == 'data' || tipo_pesquisa.value == 'data_inicio' || tipo_pesquisa.value == 'data_fim')
+    {
+        $('#pesquisa').mask('00/00/0000')
+    }else if(tipo_pesquisa.value == 'preco' || tipo_pesquisa.value == 'total')
+    {
+        $('#pesquisa').mask('0000.00',{reverse: true})
+    }else{
+        $('#pesquisa').unmask()
     }
-  },
-  dataLabels: {
-    enabled: false
-  },
-  stroke: {
-    curve: 'straight'
-  },
-  title: {
-    text: 'Leites por Registro',
-    align: 'left'
-  },
-  grid: {
-    row: {
-      colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
-      opacity: 0.5
-    },
-  },
-  xaxis: {
-    categories: categorias,
-  }
-  };
+}
 
-  var chart = new ApexCharts(document.querySelector("#chart"), options);
-  chart.render();
+
+$('#preco').mask('000.00',{reverse: true})

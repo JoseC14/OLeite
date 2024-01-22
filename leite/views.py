@@ -11,21 +11,6 @@ from os import path
 from django.core.paginator import Paginator
 from django.db.models import Avg
 
-def home(request):
-    if request.method == 'GET':
-
-        total_leite = Leite.objects.aggregate(soma=Sum('quantidade'))['soma']
-        leite_entregue = Leite.objects.all().count()
-        ganho = Soma.objects.aggregate(soma=Sum('total'))['soma']
-        media = Leite.objects.aggregate(media=Avg('quantidade'))['media']
-
-    
-        return render(request,'home.html',
-                      {'total_leite':total_leite,
-                       'leite_entregue':leite_entregue,
-                       'ganho':ganho,
-                       'media':media})
-
 
 def cadastrar_leite(request):
     if request.method == 'GET':
@@ -69,7 +54,7 @@ def somar_leite(request):
 
         leites = Leite.objects.filter(Q(data__range=[de,ate])).exclude(soma__isnull=False)  
         leite_soma = leites.aggregate(soma = Sum('quantidade'))['soma']
-        total = leite_soma*int(preco) 
+        total = leite_soma*float(preco)
         return render(request,'somar.html',{'leites':leites,
                                             'leite_soma':leite_soma,
                                             'total':total,
@@ -105,11 +90,16 @@ def pesquisar_leite(request):
         pesquisa = request.POST.get('pesquisa')
         tipo_pesquisa = request.POST.get('tipo_pesquisa')
 
+        try:
+            pesquisa_data = utils.formataData(pesquisa)
+        except:
+            pesquisa_data = pesquisa
+        
         if tipo_pesquisa == 'tudo':
             leites = Leite.objects.filter(
                     Q(quantidade__icontains=pesquisa) |
                     Q(id__icontains=pesquisa) |
-                    Q(data__icontains=pesquisa)
+                    Q(data__icontains=pesquisa_data)
             ).order_by('-data')
         elif tipo_pesquisa == 'id':
             leites = Leite.objects.filter(
@@ -117,7 +107,7 @@ def pesquisar_leite(request):
             ).order_by('-data')
         elif tipo_pesquisa == 'data':
             leites = Leite.objects.filter(
-                    data__icontains=pesquisa
+                    data__icontains=pesquisa_data
             ).order_by('-data')
         elif tipo_pesquisa == 'quantidade':
             leites = Leite.objects.filter(
@@ -161,37 +151,38 @@ def somas(request):
     if request.method == 'POST':
         pesquisa = request.POST.get('pesquisa')
         tipo_pesquisa = request.POST.get('tipo_pesquisa')
-
-        if tipo_pesquisa == 'all':
-            somas = Soma.objects.filter(Q(id__contains=pesquisa) |
-                                        Q(quantidade__contains=pesquisa) |
-                                        Q(total__contains=pesquisa) |
-                                        Q(preco_litro__contains=pesquisa) |
-                                        Q(data_inicio__contains=pesquisa) |
-                                        Q(data_fim__contains=pesquisa))
-        elif tipo_pesquisa == 'id':
-            somas = Soma.objects.filter(id__contains=pesquisa)
-        elif tipo_pesquisa == 'quantidade':
-            somas = Soma.objects.filter(quantidade__contains=pesquisa)
-        elif tipo_pesquisa == 'total':
-            somas = Soma.objects.filter(total__contains=pesquisa)
-        elif tipo_pesquisa == 'preco_litro':
-            somas = Soma.objects.filter(preco_litro__contains=pesquisa)
-        elif tipo_pesquisa == 'data_inicio':
-            somas = Soma.objects.filter(data_inicio__contains=pesquisa)
-        elif tipo_pesquisa == 'data_fim':
-            somas = Soma.objects.filter(data_fim__contains=pesquisa)
+        print(pesquisa)
+        print(type(pesquisa))
+        try:
+            data_pesquisa = utils.formataData(pesquisa)
+        except:
+            print("Não foi possível formatar data")
+            data_pesquisa = pesquisa
+        finally:
+            if tipo_pesquisa == 'all':
+                somas = Soma.objects.filter(Q(id__contains=pesquisa) |
+                                            Q(quantidade__contains=pesquisa) |
+                                            Q(total__contains=data_pesquisa) |
+                                            Q(preco_litro__contains=pesquisa) |
+                                            Q(data_inicio__contains=data_pesquisa) |
+                                            Q(data_fim__contains=data_pesquisa)) 
+            elif tipo_pesquisa == 'id':
+                somas = Soma.objects.filter(id__contains=pesquisa)
+            elif tipo_pesquisa == 'quantidade':
+                somas = Soma.objects.filter(quantidade__contains=pesquisa)
+            elif tipo_pesquisa == 'total':
+                somas = Soma.objects.filter(total__contains=pesquisa)
+            elif tipo_pesquisa == 'preco':
+                somas = Soma.objects.filter(preco_litro__contains=pesquisa)
+            elif tipo_pesquisa == 'data_inicio':
+                somas = Soma.objects.filter(data_inicio__contains=data_pesquisa)
+            elif tipo_pesquisa == 'data_fim':
+                somas = Soma.objects.filter(data_fim__contains=data_pesquisa)
         
         return render(request,'somas.html',{'somas':somas})
     
 
-def dados_registro(request):
-    data = list(Leite.objects.values())
-    return JsonResponse(data,safe=False)
 
-def dados_soma(request):
-    data = list(Soma.objects.values())
-    return JsonResponse(data,safe=False)
 
 def deletar_soma(request, pk_id):
     

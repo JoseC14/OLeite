@@ -12,13 +12,13 @@
                 <div class="row">
                 
                     <div class="col">
-                        <input name="pesquisa" type="text" class=" form-control form-control-sm p-2" id="quantidade" placeholder="Digite aqui...">
+                        <input name="pesquisa" id="pesquisa" type="text" class=" form-control form-control-sm p-2" id="quantidade" placeholder="Digite aqui...">
                     </div>
                 
                 </div>
             </div>
             <div class="col">
-                <select class="form-select" name="tipo_pesquisa" aria-label="Pesquisar por">
+                <select class="form-select" id="tipo_pesquisa" onchange="formataPesquisa()" name="tipo_pesquisa" aria-label="Pesquisar por">
                     <option selected value="all"> Pesquisar por Tudo</option>
                     <option value="id">ID</option>
                     <option value="quantidade">Quantidade</option>
