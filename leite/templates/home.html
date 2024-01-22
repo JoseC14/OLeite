@@ -1,3 +1,56 @@
 {% extends 'main.html' %}
 
-{%block content%}<h1>Bem vindo ao OLeite</h1>{%endblock%}
+{%block content%}
+
+        <div class="container mt-4">
+
+
+
+          <div class="datagrid">
+            <div class="datagrid-item">
+              <div class="datagrid-title">Leites Entregues</div>
+              <div class="datagrid-content">{{leite_entregue}}</div>
+            </div>
+            <div class="datagrid-item">
+              <div class="datagrid-title">Total de Litros</div>
+              <div class="datagrid-content">{{total_leite}}</div>
+            </div>
+            <div class="datagrid-item">
+              <div class="datagrid-title">Total ganho</div>
+              <div class="datagrid-content">{{ganho}}</div>
+            </div>
+            <div class="datagrid-item">
+              <div class="datagrid-title">Média de Leite</div>
+              <div class="datagrid-content">{{media}}</div>
+            </div>
+
+
+
+            <div class="datagrid-item">
+              <div class="datagrid-title">Total de Chuvas</div>
+              <div class="datagrid-content">
+                <div class="d-flex align-items-center">
+                  <span class="avatar avatar-xs me-2 rounded" style="background-image: url(...)"></span>
+                    4
+                </div>
+              </div>
+            </div>
+            <div class="datagrid-item">
+              <div class="datagrid-title">Total de Milimetros</div>
+              <div class="datagrid-content">100</div>
+            </div>
+            <div class="datagrid-item">
+              <div class="datagrid-title">Última chuva</div>
+              <div class="datagrid-content">
+                <span class="status status-red">
+                  08/01/2023
+                </span>
+              </div>
+            </div>
+</div>
+
+<div id="chart" class="mt-2">
+
+</div>
+  
+  {%endblock%}

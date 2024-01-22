@@ -10,8 +10,8 @@
             <div class="col">
                 <div class="row">
                 
-                    <div class="col">
-                        <input required name="pesquisa" type="text" class=" form-control form-control-sm" id="quantidade" placeholder="Digite aqui...">
+                    <div class="col ">
+                        <input name="pesquisa" type="text" class=" form-control form-control-sm p-2" id="quantidade" placeholder="Digite aqui...">
                     </div>
                 
                 </div>
@@ -33,7 +33,7 @@
 </div>
 
 
-    <table class="table">
+    <table class="table mt-3">
         <thead>
         <tr>
             <th scope="col">ID</th>
@@ -44,7 +44,7 @@
         </tr>
         </thead>
         <tbody>
-            {% for leite in leites  %}
+            {% for leite in page.object_list  %}
                 <tr>
                     <th scope="row">{{leite.id}}</th>
                     <td>{{leite.quantidade}}</td>
@@ -54,12 +54,28 @@
                         <td>Registrado</td>
                     {% else %}
                         <td> <a href="{% url 'upd_leite' leite.id %}"> <button class="btn btn-primary">Alterar</button> </a></td>
-                        <td> <a href="{% url 'del_leite' leite.id %}"> <button  class="btn btn-danger">Deletar</button> </a> </td>
+                        <td>  <button onclick="deletaDados('{{leite.id}}')" class ="btn btn-danger">Deletar</button>  </td>
                     {% endif %}
                 </tr>
             {% endfor %}
+
+            
+
         </tbody>
     </table>
+    {% if page.has_previous %}
+        <a href="{% url 'ger_leite' %}?page={{ page.previous_page_number }}"><button type="submit" class="btn btn-danger mb-2">Anterior</button></a>
+    
+    {% else %}
+
+        <button type="submit" class="btn btn-danger disabled mb-2">Anterior</button>        
+    {% endif %}
+
+    {% if page.has_next %}
+        <a href="{% url 'ger_leite' %}?page={{ page.next_page_number }}"><button type="submit" class="btn btn-info mb-2">Próximo</button></a>
+    {% else %}
+    <button type="submit" class="btn btn-info disabled mb-2">Próximo</button>
+    {% endif %}
 </div>
 
 

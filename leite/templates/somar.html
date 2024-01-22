@@ -8,17 +8,17 @@
         
             <div class="col">
                 <label for="quantidade" class="form-label">De</label>
-                <input name="de" required type="date" class=" form-control form-control-sm" id="quantidade" >
+                <input name="de" required type="date" class=" p-2 form-control form-control-sm" id="quantidade" >
             </div>
 
             <div class="col">
                 <label for="quantidade" class="form-label">Até</label>
-                <input name="ate" required type="date" class=" form-control form-control-sm" id="quantidade" >
+                <input name="ate" required type="date" class=" p-2 form-control form-control-sm" id="quantidade" >
             </div>
 
             <div class="col">
                 <label for="preco" class="form-label">Preço por Litro</label>
-                <input name="preco" type="number" class=" form-control form-control-sm" id="quantidade" >
+                <input required name="preco" type="number" class=" p-2 form-control form-control-sm" id="quantidade" >
             </div>
 
             <div class="col">
@@ -63,9 +63,26 @@
 
 
         {% if leites != None %}
+            <div class="container mt-2">
+                <div class="datagrid">
+                    <div class="datagrid-item">
+                    <div class="datagrid-title">Total de Litros</div>
+                    <div class="datagrid-content">{{leite_soma}}</div>
+                    </div>
+                </div>
+             </div>
+
+             <div class="container mt-2">
+                <div class="datagrid">
+                    <div class="datagrid-item">
+                    <div class="datagrid-title">Total</div>
+                    <div class="datagrid-content">{{total}}</div>
+                    </div>
+                </div>
+            </div>
             <div class="container">
-                <p>Total de Litros: {{leite_soma}}</p>
-                <p>Total: {{total}}</p>
+
+            
                 <table class="table">
                     <thead>
                     <tr>
@@ -85,6 +102,7 @@
                     </tbody>
                 </table>
             </div>
+        </div>
         {% endif %}
    
 

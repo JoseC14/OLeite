@@ -1,7 +1,6 @@
 from django.shortcuts import render,get_object_or_404, redirect
 from django.db import IntegrityError
 from .models import Leite
-from datetime import datetime
 from django.db.models import Q
 from .models import Soma
 from django.db.models import Sum
@@ -9,11 +8,23 @@ from django.http import JsonResponse, HttpResponse
 from . import utils
 from app.settings import BASE_DIR
 from os import path
-
+from django.core.paginator import Paginator
+from django.db.models import Avg
 
 def home(request):
     if request.method == 'GET':
-        return render(request,'home.html')
+
+        total_leite = Leite.objects.aggregate(soma=Sum('quantidade'))['soma']
+        leite_entregue = Leite.objects.all().count()
+        ganho = Soma.objects.aggregate(soma=Sum('total'))['soma']
+        media = Leite.objects.aggregate(media=Avg('quantidade'))['media']
+
+    
+        return render(request,'home.html',
+                      {'total_leite':total_leite,
+                       'leite_entregue':leite_entregue,
+                       'ganho':ganho,
+                       'media':media})
 
 
 def cadastrar_leite(request):
@@ -32,8 +43,13 @@ def cadastrar_leite(request):
 
 def gerenciar_leite(request):
     if request.method == 'GET':
-        leites = Leite.objects.all()
-        return render(request,'gerenciar_leite.html',{'leites': leites})
+        leites = Leite.objects.all().order_by('-data')
+
+        leite_paginator = Paginator(leites,10)
+        page_num = request.GET.get('page')
+        page = leite_paginator.get_page(page_num)
+
+        return render(request,'gerenciar_leite.html',{'page': page})
 
 
 def somar_leite(request):
@@ -43,7 +59,15 @@ def somar_leite(request):
         de = request.POST.get('de')
         ate = request.POST.get('ate')
         preco = request.POST.get('preco')
-        leites = Leite.objects.filter(data__range=[de,ate])  
+
+        if de == "":
+            return render(request,'somar.html',{'msg_erro':'Data de inicio não pode ser nula!'})
+        if ate == "":
+            return render(request,'somar.html',{'msg_erro':'Data final não pode ser nula!'}) 
+        if preco == "":
+            return render(request,'somar.html',{'msg_erro':'Preço não pode ser nulo!'}) 
+
+        leites = Leite.objects.filter(Q(data__range=[de,ate])).exclude(soma__isnull=False)  
         leite_soma = leites.aggregate(soma = Sum('quantidade'))['soma']
         total = leite_soma*int(preco) 
         return render(request,'somar.html',{'leites':leites,
@@ -86,23 +110,25 @@ def pesquisar_leite(request):
                     Q(quantidade__icontains=pesquisa) |
                     Q(id__icontains=pesquisa) |
                     Q(data__icontains=pesquisa)
-            )
+            ).order_by('-data')
         elif tipo_pesquisa == 'id':
             leites = Leite.objects.filter(
                     id__icontains=pesquisa
-            )
+            ).order_by('-data')
         elif tipo_pesquisa == 'data':
             leites = Leite.objects.filter(
                     data__icontains=pesquisa
-            )
+            ).order_by('-data')
         elif tipo_pesquisa == 'quantidade':
             leites = Leite.objects.filter(
                     quantidade__icontains=pesquisa
-            )
+            ).order_by('-data')
+        
+        leite_paginator = Paginator(leites,10)
+        page_num = request.GET.get('page')
+        page = leite_paginator.get_page(page_num)
 
-        
-        
-        return render(request,'gerenciar_leite.html',{'leites':leites})
+        return render(request,'gerenciar_leite.html',{'page': page})
     
 
 def cadastrar_soma(request):
@@ -113,7 +139,7 @@ def cadastrar_soma(request):
         preco = request.POST.get('preco')
         de = request.POST.get('de')
         ate = request.POST.get('ate')
-        soma_check = Soma.objects.filter(Q(data_inicio = de) | Q(data_fim=ate))
+        soma_check = Soma.objects.filter(Q(data_inicio = de) | Q(data_fim=ate) )
 
         if soma_check.exists():
             return render(request,'somar.html',{'msg_erro':'Registro de leite já existe no banco!'})
@@ -163,6 +189,9 @@ def dados_registro(request):
     data = list(Leite.objects.values())
     return JsonResponse(data,safe=False)
 
+def dados_soma(request):
+    data = list(Soma.objects.values())
+    return JsonResponse(data,safe=False)
 
 def deletar_soma(request, pk_id):
     
