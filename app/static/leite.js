@@ -1,12 +1,12 @@
 function populaTabela(id_soma){
     console.log(id_soma)
 
-    let data = fetch("http://127.0.0.1:8000/leites/")
+    
     tabela = document.getElementById("corpo-tabela")
     tabela.innerHTML = ''
     var content = ''
-    data.then((response)=>{
-        return response.json()
+    axios.get("http://localhost:8000/leites/").then((response)=>{
+        return response.data
     }).then((data) =>{
         console.log(data)
         data.forEach(element => {

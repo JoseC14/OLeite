@@ -37,24 +37,24 @@
         <thead>
         <tr>
             <th scope="col">ID</th>
-            <th scope="col">Quantidade</th>
+            <th scope="col">Milimetros</th>
             <th scope="col">Data</th>
             <th scope="col">Alterar</th>
             <th scoper="col"> Deletar</th>
         </tr>
         </thead>
         <tbody>
-            {% for leite in page.object_list  %}
+            {% for chuva in page.object_list  %}
                 <tr>
-                    <th scope="row">{{leite.id}}</th>
-                    <td>{{leite.quantidade}}</td>
-                    <td>{{leite.data}}</td>
-                    {% if leite.soma is not None%}
+                    <th scope="row">{{chuva.id}}</th>
+                    <td>{{chuva.milimetros}}</td>
+                    <td>{{chuva.data}}</td>
+                    {% if chuva.soma is not None%}
                         <td>Registrado</td>
                         <td>Registrado</td>
                     {% else %}
-                        <td> <a href="{% url 'upd_leite' leite.id %}"> <button class="btn btn-primary">Alterar</button> </a></td>
-                        <td> <a href="{% url 'del_leite' leite.id %}"> <button onclick="deletaDados('{{leite.id}}')" class ="btn btn-danger">Deletar</button>  </a></td>
+                        <td> <a href="{% url 'upd_chuva' chuva.id %}"> <button class="btn btn-primary">Alterar</button> </a></td>
+                        <td> <a href="{% url 'del_chuva' chuva.id%}"><button onclick="deletaDados('{{chuva.id}}')" class ="btn btn-danger">Deletar</button></a></td>
                     {% endif %}
                 </tr>
             {% endfor %}
@@ -64,7 +64,7 @@
         </tbody>
     </table>
     {% if page.has_previous %}
-        <a href="{% url 'ger_leite' %}?page={{ page.previous_page_number }}"><button type="submit" class="btn btn-danger mb-2">Anterior</button></a>
+        <a href="{% url 'ger_chuvas' %}?page={{ page.previous_page_number }}"><button type="submit" class="btn btn-danger mb-2">Anterior</button></a>
     
     {% else %}
 
@@ -72,7 +72,7 @@
     {% endif %}
 
     {% if page.has_next %}
-        <a href="{% url 'ger_leite' %}?page={{ page.next_page_number }}"><button type="submit" class="btn btn-info mb-2">Próximo</button></a>
+        <a href="{% url 'ger_chuvas' %}?page={{ page.next_page_number }}"><button type="submit" class="btn btn-info mb-2">Próximo</button></a>
     {% else %}
     <button type="submit" class="btn btn-info disabled mb-2">Próximo</button>
     {% endif %}

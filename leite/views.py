@@ -4,31 +4,35 @@ from .models import Leite
 from django.db.models import Q
 from .models import Soma
 from django.db.models import Sum
-from django.http import JsonResponse, HttpResponse
+from django.http import HttpResponse
 from . import utils
 from app.settings import BASE_DIR
 from os import path
 from django.core.paginator import Paginator
 from django.db.models import Avg
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 
 
+@login_required
 def cadastrar_leite(request):
     if request.method == 'GET':
         return render(request,'cadastrar_leite.html')
     elif request.method == 'POST':
         quantidade = request.POST.get('quantidade')
         data = request.POST.get('data')
-        leite = Leite(quantidade=quantidade,data=data)
-        try:
+        leite = Leite(quantidade=quantidade,data=data,usuario=request.user)
+        if Leite.objects.filter(Q(usuario=request.user) & Q(data=data)).exists():
+            return render(request,'cadastrar_leite.html',{'erro':'Data duplicada!'})
+        else:
             leite.save()
             return render(request,'cadastrar_leite.html', {'msg_sucesso':'Entrega cadastrada!'})
-        except IntegrityError:
-            return render(request,'cadastrar_leite.html',{'erro':'Data duplicada!'})
 
 
+@login_required
 def gerenciar_leite(request):
     if request.method == 'GET':
-        leites = Leite.objects.all().order_by('-data')
+        leites = Leite.objects.filter(usuario=request.user.id).order_by('-data')
 
         leite_paginator = Paginator(leites,10)
         page_num = request.GET.get('page')
@@ -36,7 +40,7 @@ def gerenciar_leite(request):
 
         return render(request,'gerenciar_leite.html',{'page': page})
 
-
+@login_required
 def somar_leite(request):
     if request.method == 'GET':
         return render(request,'somar.html')
@@ -52,7 +56,7 @@ def somar_leite(request):
         if preco == "":
             return render(request,'somar.html',{'msg_erro':'Preço não pode ser nulo!'}) 
 
-        leites = Leite.objects.filter(Q(data__range=[de,ate])).exclude(soma__isnull=False)  
+        leites = Leite.objects.filter(Q(data__range=[de,ate]) & Q(usuario=request.user.id)).exclude(soma__isnull=False)  
         leite_soma = leites.aggregate(soma = Sum('quantidade'))['soma']
         total = leite_soma*float(preco)
         return render(request,'somar.html',{'leites':leites,
@@ -62,14 +66,14 @@ def somar_leite(request):
                                             'de':de,
                                             'ate':ate})
     
-
+@login_required
 def deletar_leite(request,pk_id):
     if request.method == 'GET':
-        leite = get_object_or_404(Leite, pk=pk_id)
+        leite = get_object_or_404(Leite, id=pk_id, usuario=request.user.id)
         leite.delete()
         return redirect('ger_leite')
     
-
+@login_required
 def alterar_leite(request,pk_id):
     
     if request.method == 'GET':
@@ -84,7 +88,7 @@ def alterar_leite(request,pk_id):
         leite.save()    
         return redirect('ger_leite')
 
-
+@login_required
 def pesquisar_leite(request):
     if request.method == 'POST':
         pesquisa = request.POST.get('pesquisa')
@@ -97,21 +101,22 @@ def pesquisar_leite(request):
         
         if tipo_pesquisa == 'tudo':
             leites = Leite.objects.filter(
-                    Q(quantidade__icontains=pesquisa) |
+                    (Q(quantidade__icontains=pesquisa) |
                     Q(id__icontains=pesquisa) |
-                    Q(data__icontains=pesquisa_data)
+                    Q(data__icontains=pesquisa_data)) &
+                    Q(usuario=request.user.id)
             ).order_by('-data')
         elif tipo_pesquisa == 'id':
             leites = Leite.objects.filter(
-                    id__icontains=pesquisa
+                    Q(id__icontains=pesquisa) & Q(usuario=request.user.id)
             ).order_by('-data')
         elif tipo_pesquisa == 'data':
             leites = Leite.objects.filter(
-                    data__icontains=pesquisa_data
+                    Q(data__icontains=pesquisa_data) & Q(usuario=request.user.id)
             ).order_by('-data')
         elif tipo_pesquisa == 'quantidade':
             leites = Leite.objects.filter(
-                    quantidade__icontains=pesquisa
+                    Q(quantidade__icontains=pesquisa) & Q(usuario=request.user.id)
             ).order_by('-data')
         
         leite_paginator = Paginator(leites,10)
@@ -120,7 +125,7 @@ def pesquisar_leite(request):
 
         return render(request,'gerenciar_leite.html',{'page': page})
     
-
+@login_required
 def cadastrar_soma(request):
     if request.method == 'POST':
         leites = request.POST.getlist('leites[]')
@@ -129,12 +134,12 @@ def cadastrar_soma(request):
         preco = request.POST.get('preco')
         de = request.POST.get('de')
         ate = request.POST.get('ate')
-        soma_check = Soma.objects.filter(Q(data_inicio = de) | Q(data_fim=ate) )
+        soma_check = Soma.objects.filter((Q(data_inicio = de) | Q(data_fim=ate)) & Q(usuario=request.user.id))
 
         if soma_check.exists():
             return render(request,'somar.html',{'msg_erro':'Registro de leite já existe no banco!'})
         
-        soma = Soma(quantidade=total_litros, total=total, preco_litro=preco, data_inicio=de, data_fim=ate)
+        soma = Soma(quantidade=total_litros, total=total, preco_litro=preco, data_inicio=de, data_fim=ate,usuario=request.user)
         soma.save()
         for id in leites:
             leite = Leite.objects.get(id=id)
@@ -143,10 +148,10 @@ def cadastrar_soma(request):
         
         return render(request,'somar.html',{'msg_sucesso':'Registrado!'})
 
-
+@login_required
 def somas(request):
     if request.method == 'GET':        
-        somas = Soma.objects.all()
+        somas = Soma.objects.filter(usuario=request.user.id)
         return render(request,'somas.html',{'somas':somas})
     if request.method == 'POST':
         pesquisa = request.POST.get('pesquisa')
@@ -165,25 +170,26 @@ def somas(request):
                                             Q(total__contains=data_pesquisa) |
                                             Q(preco_litro__contains=pesquisa) |
                                             Q(data_inicio__contains=data_pesquisa) |
-                                            Q(data_fim__contains=data_pesquisa)) 
+                                            Q(data_fim__contains=data_pesquisa) |
+                                            Q(usuario=request.user.id))
             elif tipo_pesquisa == 'id':
-                somas = Soma.objects.filter(id__contains=pesquisa)
+                somas = Soma.objects.filter(Q(id__contains=pesquisa) | Q(usuario=request.user.id))
             elif tipo_pesquisa == 'quantidade':
-                somas = Soma.objects.filter(quantidade__contains=pesquisa)
+                somas = Soma.objects.filter(Q(quantidade__contains=pesquisa) | Q(usuario=request.user.id))
             elif tipo_pesquisa == 'total':
-                somas = Soma.objects.filter(total__contains=pesquisa)
+                somas = Soma.objects.filter(Q(total__contains=pesquisa) | Q(usuario=request.user.id))
             elif tipo_pesquisa == 'preco':
-                somas = Soma.objects.filter(preco_litro__contains=pesquisa)
+                somas = Soma.objects.filter(Q(preco_litro__contains=pesquisa) | Q(usuario=request.user.id))
             elif tipo_pesquisa == 'data_inicio':
-                somas = Soma.objects.filter(data_inicio__contains=data_pesquisa)
+                somas = Soma.objects.filter(Q(data_inicio__contains=data_pesquisa) | Q(usuario=request.user.id))
             elif tipo_pesquisa == 'data_fim':
-                somas = Soma.objects.filter(data_fim__contains=data_pesquisa)
+                somas = Soma.objects.filter(Q(data_fim__contains=data_pesquisa) | Q(usuario=request.user.id))
         
         return render(request,'somas.html',{'somas':somas})
     
 
 
-
+@login_required
 def deletar_soma(request, pk_id):
     
     leites = Leite.objects.filter(soma=pk_id)
@@ -195,7 +201,7 @@ def deletar_soma(request, pk_id):
     soma.delete() 
     return redirect('somas')
 
-
+@login_required
 def gerar_relatorio(request):
 
     if request.method == 'POST':

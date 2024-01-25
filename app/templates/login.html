@@ -1,0 +1,41 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<form action="{% url 'login' %}" method="POST">
+    {% csrf_token %}
+    <div class="container text-center d-flex justify-content-center mt-4">
+
+
+        <div class="col-sm-3">
+            <div class="mb-3">
+                <label for="quantidade" class="form-label">Usuário</label>
+                <input  required name="usuario" type="text" class=" form-control form-control-sm p-2" id="quantidade" placeholder="Seu usuário...">
+            </div>
+            <div class="mb-3">
+                <label for="quantidade" class="form-label">Senha</label>
+                <input required type="text" name="senha"class=" form-control form-control-sm p-2" id="quantidade" placeholder="Sua senha...">
+            </div>
+            <button type="submit" class="btn btn-success">Entrar</button>
+        </div>
+
+    </div>
+</form>
+<div class="text-center d-flex justify-content-center">
+    <a href="{% url 'cad_usuario' %}" >Não tem usuário? Cadastre-se</a>
+</div>
+
+
+{% if msg_sucesso != None %}
+    <div class="alert alert-success mt-4 container text-center" role="alert">
+        {{ msg_sucesso }}
+    </div> 
+{% endif %}
+
+{% if msg_erro != None %}
+<div class="alert alert-danger mt-4 container text-center" role="alert">
+    {{ msg_erro }}
+</div> 
+{% endif %}
+
+{%endblock%}

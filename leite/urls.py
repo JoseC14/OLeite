@@ -11,7 +11,6 @@ urlpatterns = [
     path('pesquisaleite/',views.pesquisar_leite,name='pes_leite'),
     path('cadastrarsoma/',views.cadastrar_soma,name='cad_soma'),
     path('somas/',views.somas,name='somas'),
-    
     path('deletarsoma/<int:pk_id>', views.deletar_soma, name='del_registro'),
     path('gerarelatorio/',views.gerar_relatorio, name="ger_rel"),
 

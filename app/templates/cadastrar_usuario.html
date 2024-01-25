@@ -1,0 +1,28 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<form action="{% url 'cad_usuario' %}" method="POST">
+    {% csrf_token %}
+    <div class="container text-center d-flex justify-content-center mt-4">
+
+        <div class="col-sm-3">
+            <div class="mb-3">
+                <label for="quantidade" class="form-label">Usuário</label>
+                <input  required name="usuario" type="text" class=" form-control form-control-sm p-2" id="quantidade" placeholder="Seu usuário...">
+            </div>
+            <div class="mb-3">
+                <label for="quantidade" class="form-label">Email</label>
+                <input required type="email" name="email"class=" form-control form-control-sm p-2" id="quantidade" placeholder="Sua senha...">
+            </div>
+            <div class="mb-3">
+                <label for="quantidade" class="form-label">Senha</label>
+                <input required type="text" name="senha"class=" form-control form-control-sm p-2" id="quantidade" placeholder="Sua senha...">
+            </div>
+            <button type="submit" class="btn btn-success">Criar</button>
+        </div>
+
+    </div>
+</form>
+
+{%endblock%}

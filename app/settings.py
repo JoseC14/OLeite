@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'app',
     'leite',
     'corsheaders',
+    'chuva'
 ]
 
 MIDDLEWARE = [

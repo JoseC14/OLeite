@@ -3,7 +3,7 @@
 {%block content%}
     
             {%if leite != None%}
-                <form action="{% url "upd_leite" leite.id %}" method="POST">
+                <form action="{% url 'upd_leite' leite.id %}" method="POST">
                         {% csrf_token %}
                     <div class="container">
 

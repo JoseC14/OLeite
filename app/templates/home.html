@@ -2,10 +2,7 @@
 
 {%block content%}
 
-        <div class="container mt-4">
-
-
-
+<div class="container mt-4">
           <div class="datagrid">
             <div class="datagrid-item">
               <div class="datagrid-title">Leites Entregues</div>
@@ -31,13 +28,13 @@
               <div class="datagrid-content">
                 <div class="d-flex align-items-center">
                   <span class="avatar avatar-xs me-2 rounded" style="background-image: url(...)"></span>
-                    4
+                    {{total_chuvas}}
                 </div>
               </div>
             </div>
             <div class="datagrid-item">
               <div class="datagrid-title">Total de Milimetros</div>
-              <div class="datagrid-content">100</div>
+              <div class="datagrid-content">{{total_milimetros}}</div>
             </div>
             <div class="datagrid-item">
               <div class="datagrid-title">Última chuva</div>
@@ -47,10 +44,35 @@
                 </span>
               </div>
             </div>
+          </div>
 </div>
 
-<div id="chart" class="mt-2">
+<div class="card mt-3">
+  <div class="card-header">
+    <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs">
+      <li class="nav-item">
+        <a href="#tabs-home-ex4" class="nav-link active" data-bs-toggle="tab">Leites</a>
+      </li>
+      <li class="nav-item">
+        <a href="#tabs-profile-ex4" class="nav-link" data-bs-toggle="tab">Chuvas</a>
+      </li>
+    </ul>
+  </div>
+  <div class="card-body">
+    <div class="tab-content">
+      <div class="tab-pane active show" id="tabs-home-ex4">
+        <div id="leites">
 
+        </div>
+      </div>
+      <div class="tab-pane" id="tabs-profile-ex4">
+        <div id="chuvas"> 
+          
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
   
   {%endblock%}
