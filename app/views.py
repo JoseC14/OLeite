@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
+from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
 
 
@@ -16,12 +17,12 @@ from django.contrib.auth.decorators import login_required
 def home(request):
     if request.method == 'GET':
 
-        total_leite = Leite.objects.aggregate(soma=Sum('quantidade'))['soma']
-        total_chuvas = Chuva.objects.all().count()
-        leite_entregue = Leite.objects.all().count()
-        ganho = Soma.objects.aggregate(soma=Sum('total'))['soma']
-        media = Leite.objects.aggregate(media=Avg('quantidade'))['media']
-        total_milimetros = Chuva.objects.aggregate(soma=Sum('milimetros'))['soma']
+        total_leite = Leite.objects.filter(usuario=request.user.id).aggregate(soma=Sum('quantidade'))['soma']
+        total_chuvas = Chuva.objects.filter(usuario=request.user).count()
+        leite_entregue = Leite.objects.filter(usuario=request.user.id).count()
+        ganho = Soma.objects.filter(usuario=request.user.id).aggregate(soma=Sum('total'))['soma']
+        media = Leite.objects.filter(usuario=request.user.id).aggregate(media=Avg('quantidade'))['media']
+        total_milimetros = Chuva.objects.filter(usuario=request.user.id).aggregate(soma=Sum('milimetros'))['soma']
     
         return render(request,'home.html',
                       {'total_leite':total_leite,
@@ -43,7 +44,7 @@ def dados_soma(request):
 
 @login_required
 def dados_chuva(request):
-    data = list(Chuva.objects.values())
+    data = list(Chuva.objects.filter(usuario=request.user.id).values())
     return JsonResponse(data,safe=False)
 
 
@@ -75,9 +76,23 @@ def criar_usuario(request):
     if request.method == 'GET':
         return render(request,'cadastrar_usuario.html')
     elif request.method == 'POST':
+        primeiro_nome = request.POST.get('primeiro_nome')
+        segundo_nome = request.POST.get('sobrenome')
         usuario = request.POST.get('usuario')
         email = request.POST.get('email')
         senha = request.POST.get('senha')
-        user = User.objects.create_user(usuario,email,senha)
-        user.save()
-        return redirect('login')
+        if primeiro_nome or segundo_nome is None:
+           return render(request,'cadastrar_usuario.html',{'msg_erro':'Erro! Campos não preenchidos'})
+        try:
+            user = User.objects.create_user(
+                username=usuario,
+                email=email,
+                password=senha,
+            )
+            user.first_name = primeiro_nome
+            user.last_name = segundo_nome
+            user.save()
+            return render(request,'login.html',{'msg_sucesso':'Você se cadastrou com sucesso! Use seu usuário e senha para continuar'})
+        except ValueError:
+            return render(request,'cadastrar_usuario.html',{'msg_erro':'Erro! Campos não preenchidos'})
+        

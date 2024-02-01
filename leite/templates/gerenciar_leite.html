@@ -54,7 +54,7 @@
                         <td>Registrado</td>
                     {% else %}
                         <td> <a href="{% url 'upd_leite' leite.id %}"> <button class="btn btn-primary">Alterar</button> </a></td>
-                        <td> <a href="{% url 'del_leite' leite.id %}"> <button onclick="deletaDados('{{leite.id}}')" class ="btn btn-danger">Deletar</button>  </a></td>
+                        <td> <a href="{% url 'del_leite' leite.id %}"> <button onclick="deletaDados('{{leite.id}}','leite')" class ="btn btn-danger">Deletar</button>  </a></td>
                     {% endif %}
                 </tr>
             {% endfor %}

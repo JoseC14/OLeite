@@ -45,13 +45,7 @@ function passaTabela(){
 }
 
 
-function deletaDados(id){
-  console.log("Deletando...")
-  var confirmacao = confirm("Deseja realmente deletar?")
-  if(confirmacao){
-    window.location.href = '/deletarleite/'+id
-  }
-}
+
 
 function formataPesquisa(){
     var tipo_pesquisa = document.getElementById('tipo_pesquisa')

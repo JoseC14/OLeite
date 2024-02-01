@@ -10,15 +10,29 @@
             </div>
             <div class="datagrid-item">
               <div class="datagrid-title">Total de Litros</div>
-              <div class="datagrid-content">{{total_leite}}</div>
+              {% if total_leite is not None %}
+                <div class="datagrid-content">{{total_leite}}</div>
+              {% else %}
+                <div class="datagrid-content">Nenhum</div>
+              {% endif %}
             </div>
             <div class="datagrid-item">
+              
               <div class="datagrid-title">Total ganho</div>
-              <div class="datagrid-content">{{ganho}}</div>
+              {% if ganho is not none %}
+                <div class="datagrid-content">{{ganho}}</div>
+              {% else %}
+                <div class="datagrid-content">0</div>
+              {% endif %}
+
             </div>
             <div class="datagrid-item">
               <div class="datagrid-title">Média de Leite</div>
+              {% if media is not None %}
               <div class="datagrid-content">{{media}}</div>
+              {% else %}
+              <div class="datagrid-content">0</div>
+              {% endif %}
             </div>
 
 
@@ -34,13 +48,25 @@
             </div>
             <div class="datagrid-item">
               <div class="datagrid-title">Total de Milimetros</div>
-              <div class="datagrid-content">{{total_milimetros}}</div>
+              {% if total_milimetros is not None %}
+                <div class="datagrid-content">{{total_milimetros}}</div>
+              {% else %}
+                <div class="datagrid-content">0</div>
+              {% endif %}
             </div>
             <div class="datagrid-item">
               <div class="datagrid-title">Última chuva</div>
               <div class="datagrid-content">
                 <span class="status status-red">
                   08/01/2023
+                </span>
+              </div>
+            </div>
+            <div class="datagrid-item">
+              <div class="datagrid-title">Temperatura atual</div>
+              <div class="datagrid-content">
+                <span class="status status-red">
+                  39
                 </span>
               </div>
             </div>
@@ -61,12 +87,12 @@
   <div class="card-body">
     <div class="tab-content">
       <div class="tab-pane active show" id="tabs-home-ex4">
-        <div id="leites">
+        <div id="leites" onload="carregaAnimacao('leites')">
 
         </div>
       </div>
       <div class="tab-pane" id="tabs-profile-ex4">
-        <div id="chuvas"> 
+        <div id="chuvas" onload> 
           
         </div>
       </div>

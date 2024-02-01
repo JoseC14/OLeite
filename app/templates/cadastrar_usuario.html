@@ -1,28 +1,60 @@
 {% extends 'main.html' %}
 
 {% block content %}
+          <div>
+            <form action="{% url 'cad_usuario' %}" method="POST" id="cria_user">
+            {% csrf_token %}
 
-<form action="{% url 'cad_usuario' %}" method="POST">
-    {% csrf_token %}
-    <div class="container text-center d-flex justify-content-center mt-4">
-
-        <div class="col-sm-3">
-            <div class="mb-3">
-                <label for="quantidade" class="form-label">Usuário</label>
-                <input  required name="usuario" type="text" class=" form-control form-control-sm p-2" id="quantidade" placeholder="Seu usuário...">
-            </div>
-            <div class="mb-3">
-                <label for="quantidade" class="form-label">Email</label>
-                <input required type="email" name="email"class=" form-control form-control-sm p-2" id="quantidade" placeholder="Sua senha...">
-            </div>
-            <div class="mb-3">
-                <label for="quantidade" class="form-label">Senha</label>
-                <input required type="text" name="senha"class=" form-control form-control-sm p-2" id="quantidade" placeholder="Sua senha...">
-            </div>
-            <button type="submit" class="btn btn-success">Criar</button>
-        </div>
+               
+                <div class="container text-center d-flex justify-content-center mt-4">
+                   
+                    <div class="col-sm-3">
+                        {% if msg_erro is not None %}
+                        <div class="alert alert-danger mt-4 container text-center" role="alert">
+                            {{ msg_erro }}
+                        </div> 
+                        {% endif %}
+                            <div class="mb-3">
+                                <label for="quantidade" class="form-label"> Primeiro Nome *</label>
+                                <input  required name="primeiro_nome" type="text" class=" form-control form-control-sm p-2" id="quantidade" placeholder="Seu primeiro nome...">
+                            </div>
+                            <div class="mb-3">
+                                <label for="quantidade" class="form-label">Sobrenome *</label>
+                                <input required type="text" name="sobrenome"class=" form-control form-control-sm p-2" id="quantidade" placeholder="Seu sobrenome...">
+                            </div>
+                            <div class="mb-3">
+                                <label for="quantidade" class="form-label">Usuário *</label>
+                                <input required type="text" name="usuario" class=" form-control form-control-sm p-2" id="quantidade" placeholder="Seu usuário...">
+                            </div>
+                            <div class="mb-3">
+                                <label for="quantidade" class="form-label">Email *</label>
+                                <input required type="email" name="email"class=" form-control form-control-sm p-2" id="quantidade" placeholder="Seu email...">
+                            </div>
+                            <div class="mb-3">
+                                <label for="quantidade" class="form-label">Senha *</label>
+                                <input required type="password" oninput="checaSenha(event)" name="senha"class=" form-control form-control-sm p-2" id="senha" placeholder="Sua senha...">
+                                <ul class="req_senha">
+                                    <li id="minuscula">Ao menos uma letra minúscula</li>
+                                    <li id="maiuscula">Ao menos uma letra maiúscula</li>
+                                    <li id="especial">Um caractere especial(#, $, %, etc)</li>
+                                    <li id="numero">Ao menos um número </li>
+                                    <li id="oito"> Ao menos 8 caracteres </li>
+                                    
+                                </ul>
+                            </div>
+                            <div class="mb-3">
+                                <label for="quantidade"  class="form-label">Confirmar Senha *</label>
+                                <input required type="password" name="confirmar_senha" oninput="checaSenha(event)" class=" form-control form-control-sm p-2" id="confirmar_senha" placeholder="Confirme sua senha...">
+                            </div>
+                            <button type="submit" id="botao-form" class="btn btn-success disabled">Criar</button>
+                        </div>
+                           
+                
+                    </div>
+                </form>
 
     </div>
-</form>
+  
+
 
 {%endblock%}

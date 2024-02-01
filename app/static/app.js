@@ -99,3 +99,134 @@ axios.get("http://localhost:8000/chuvas/").then((data) => {
   var grafico_chuvas = new ApexCharts(document.querySelector("#chuvas"), optionsChuvas);
   grafico_chuvas.render();
 })
+
+
+
+
+
+function checaSenhaNumeros(senha)
+{
+  var regex = new RegExp('[0-9]')
+  return regex.test(senha)
+}
+
+function checaSenhaEspecial(senha)
+{
+  var regex = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/;
+  return regex.test(senha)
+}
+
+function checaSenhaMaiusculo(senha)
+{
+  var regex = new RegExp('[A-Z]')
+  return regex.test(senha)
+}
+
+function checaSenhaMinusculo(senha)
+{
+  var regex = new RegExp('[a-z]')
+  return regex.test(senha)
+}
+
+let senha_valida = false
+let senha_igual = false
+
+
+function checaSenha(event)
+{
+  var botao = document.getElementById('botao-form')
+  var senha = document.getElementById('senha').value
+  console.log(`Senhas são iguais: ${senha_igual}`)
+  console.log(`Senhas é válida: ${senha_valida}`)
+  
+
+  if(event.target.id == 'senha'){
+    console.log('campo senha')
+    
+    var numero = document.getElementById('numero')
+    var especial = document.getElementById('especial')
+    var minuscula = document.getElementById('minuscula')
+    var maiuscula = document.getElementById('maiuscula')
+    var oito = document.getElementById('oito')
+    
+    if(senha.length >= 8)
+    {
+      oito.classList.add('list-invisible')
+    }else if(oito.classList.contains('list-invisible')){
+      oito.classList.remove('list-invisible')
+    }
+
+    if(checaSenhaEspecial(senha))
+    {
+      especial.classList.add('list-invisible')
+    }else if(especial.classList.contains('list-invisible'))
+    {
+      especial.classList.remove('list-invisible')
+     
+    }
+
+    if(checaSenhaNumeros(senha))
+    {
+      numero.classList.add('list-invisible')
+    }else if(numero.classList.contains('list-invisible'))
+    {
+      numero.classList.remove('list-invisible')
+      
+    }
+
+    if(checaSenhaMaiusculo(senha))
+    {
+      maiuscula.classList.add('list-invisible')
+    }else if(maiuscula.classList.contains('list-invisible'))
+    {
+      maiuscula.classList.remove('list-invisible')
+    
+    }
+
+    if(checaSenhaMinusculo(senha))
+    {
+      minuscula.classList.add('list-invisible')
+    }else if(minuscula.classList.contains('list-invisible'))
+    {
+      minuscula.classList.remove('list-invisible')
+    }
+
+    if(checaSenhaEspecial(senha) && checaSenhaMaiusculo(senha)
+    && checaSenhaMinusculo(senha) && checaSenhaNumeros(senha))
+    {
+      senha_valida = true
+    }else{
+      senha_valida = false
+    }
+  }else if(event.target.id == 'confirmar_senha')
+  {
+    console.log('campo confirma senha')
+    var checa_senha = document.getElementById('confirmar_senha').value
+    if(senha == checa_senha){
+      senha_igual = true
+    }else{
+      senha_igual = false
+    }
+  }
+
+  if(senha_valida && senha_igual){
+    botao.classList.remove('disabled')
+    console.log("habilitando botão")
+  }
+  else
+  {
+    console.log("desabilitando botão")
+    botao.classList.add('disabled')
+  }
+
+  
+}
+
+function deletaDados(id,modulo){
+  event.preventDefault()
+  console.log("Deletando...")
+  var confirmacao = confirm("Deseja realmente deletar?")
+  if(confirmacao == true){
+    window.location.href = `/${modulo}/deletar${modulo}/${id}`
+  }
+}

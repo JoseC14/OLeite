@@ -1,0 +1,49 @@
+{% extends 'main.html' %}
+
+{%block content%}
+<form action="#" method="POST">
+    {% csrf_token %}
+    <div class="container text-center mt-4">
+
+
+        <div class="col-sm-3">
+            <div class="mb-3">
+                <label for="quantidade" class="form-label">Nome</label>
+                <input  value="{{gado.nome}}" required name="nome" type="text" class=" form-control form-control-sm p-2" id="quantidade" placeholder="Nome do gado...">
+            </div>
+            <div class="mb-3">
+                <label for="quantidade" class="form-label">Tipo</label>
+                <select class="form-select" value="touro" onchange="checaLeitera()" name="tipo_gado"  id="tipo-gado">
+                    <option {%if gado.tipo == 'boi' %} selected {% endif %} value="boi">Boi</option>
+                    <option {%if gado.tipo == 'vaca' %} selected {% endif %} value="vaca"> Vaca</option>
+                    <option {%if gado.tipo == 'touro' %} selected {% endif %} value="touro">Touro</option>
+                    <option {%if gado.tipo == 'garrote' %} selected {% endif %} value="garrote">Garrote</option>
+                    <option {%if gado.tipo == 'bezerro' %} selected {% endif %} value="bezerro">Bezerro</option>
+                    <option {%if gado.tipo == 'bezerra' %} selected {% endif %} value="bezerra">Bezerra</option>
+                </select>
+            </div>
+
+            <div class="mb-3 leitera" id="leitera">
+                <label for="quantidade" class="form-label">Leitera</label>
+                <input type="checkbox" name="leitera" class=" form-checkbox" id="leitera-check" placeholder="Data da entrega do leite...">
+            </div>
+
+            
+            <button type="submit" class="btn btn-info">Alterar</button>
+        </div>
+
+    </div>
+</form>
+
+{% if msg_sucesso != None %}
+    <div class="alert alert-success mt-4 container text-center" role="alert">
+        {{ msg_sucesso }}
+    </div> 
+{% endif %}
+
+{% if msg_erro != None %}
+<div class="alert alert-danger mt-4 container text-center" role="alert">
+    {{ erro }}
+</div> 
+{% endif %}
+{%endblock%}

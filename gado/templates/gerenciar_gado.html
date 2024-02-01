@@ -17,11 +17,11 @@
                 </div>
             </div>
             <div class="col">
-                <select class="form-select" onchange="formataPesquisa()" name="tipo_pesquisa"  id="tipo_pesquisa">
+                <select class="form-select"  name="tipo_pesquisa"  id="tipo_pesquisa">
                     <option selected value="tudo"> Pesquisar por Tudo</option>
                     <option value="id">ID</option>
-                    <option value="data">Data</option>
-                    <option value="quantidade">Quantidade</option>
+                    <option value="data">Nome</option>
+                    <option value="quantidade">Tipo</option>
                 </select>
             </div>
             <div class="col">
@@ -37,21 +37,18 @@
         <thead>
         <tr>
             <th scope="col">ID</th>
-            <th scope="col">Milimetros</th>
-            <th scope="col">Data</th>
-            <th scope="col">Alterar</th>
-            <th scoper="col"> Deletar</th>
+            <th scope="col">Nome</th>
+            <th scope="col">Tipo</th>
         </tr>
         </thead>
         <tbody>
-            {% for chuva in page.object_list  %}
+            {% for gado in page.object_list  %}
                 <tr>
-                    <th scope="row">{{chuva.id}}</th>
-                    <td>{{chuva.milimetros}}</td>
-                    <td>{{chuva.data}}</td>
-
-                    <td> <a href="{% url 'upd_chuva' chuva.id %}"> <button class="btn btn-primary">Alterar</button> </a></td>
-                    <td> <a href="{% url 'del_chuva' chuva.id%}"><button  class="btn btn-danger" onclick="deletaDados('{{chuva.id}}','chuva')" ="btn btn-danger">Deletar</button></a></td>
+                    <th scope="row">{{ gado.id}}</th>
+                    <td>{{gado.nome}} </td>
+                    <td>{{gado.tipo.capitalize}} {% if gado.leitera == True %} 🥛 {%endif%}</td>
+                    <td> <a href="{% url 'upd_gado' gado.id %}"> <button class="btn btn-primary">Alterar</button> </a></td>
+                    <td> <a href="{% url 'del_gado' gado.id %}"><button class ="btn btn-danger">Deletar</button></a></td>
                 </tr>
             {% endfor %}
 
@@ -60,7 +57,7 @@
         </tbody>
     </table>
     {% if page.has_previous %}
-        <a href="{% url 'ger_chuvas' %}?page={{ page.previous_page_number }}"><button type="submit" class="btn btn-danger mb-2">Anterior</button></a>
+        <a href="{% url 'ger_gado' %}?page={{ page.previous_page_number }}"><button type="submit" class="btn btn-danger mb-2">Anterior</button></a>
     
     {% else %}
 
@@ -68,7 +65,7 @@
     {% endif %}
 
     {% if page.has_next %}
-        <a href="{% url 'ger_chuvas' %}?page={{ page.next_page_number }}"><button type="submit" class="btn btn-info mb-2">Próximo</button></a>
+        <a href="{% url 'ger_gado' %}?page={{ page.next_page_number }}"><button type="submit" class="btn btn-info mb-2">Próximo</button></a>
     {% else %}
     <button type="submit" class="btn btn-info disabled mb-2">Próximo</button>
     {% endif %}
