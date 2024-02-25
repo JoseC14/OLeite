@@ -65,6 +65,15 @@
                 </ul>
               </li>
 
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Despesas
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href= "{% url 'cad_despesa' %}">Cadastrar Despesa</a></li>
+                  <li><a class="dropdown-item" href="{% url 'ger_despesas' %}">Gerenciar Despesas</a></li>
+                </ul>
+              </li>
             </ul>
             <div class="ms-auto">
               {{user}}

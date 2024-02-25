@@ -1,0 +1,38 @@
+{% extends 'main.html' %}
+
+{%block content%}
+<form action="{% url 'upd_despesa' despesa.id %}" method="POST">
+    {% csrf_token %}
+    <div class="container text-center mt-4">
+
+
+        <div class="col-sm-3">
+            <div class="mb-3">
+                <label for="quantidade" class="form-label">Tipo</label>
+                <input  value="{{despesa.tipo}}" required name="razao" type="text" class=" form-control form-control-sm p-2" id="quantidade" placeholder="Nome do gado...">
+            </div>
+
+            <div class="mb-3" id="gasto">
+                <label for="quantidade" class="form-label">Gasto</label>
+                <input value="{{despesa.gasto}}" required type="number" name="gasto" class=" form-control" placeholder="Data da entrega do leite...">
+            </div>
+
+            
+            <button type="submit" class="btn btn-info">Alterar</button>
+        </div>
+
+    </div>
+</form>
+
+{% if msg_sucesso != None %}
+    <div class="alert alert-success mt-4 container text-center" role="alert">
+        {{ msg_sucesso }}
+    </div> 
+{% endif %}
+
+{% if msg_erro != None %}
+<div class="alert alert-danger mt-4 container text-center" role="alert">
+    {{ erro }}
+</div> 
+{% endif %}
+{%endblock%}

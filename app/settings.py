@@ -30,7 +30,8 @@ INSTALLED_APPS = [
     'leite',
     'corsheaders',
     'chuva',
-    'gado'
+    'gado',
+    'despesa'
 ]
 
 MIDDLEWARE = [
@@ -122,7 +123,8 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "leite/static"),
     os.path.join(BASE_DIR, "app/static"),
-    os.path.join(BASE_DIR, "gado/static")
+    os.path.join(BASE_DIR, "gado/static"),
+    os.path.join(BASE_DIR, "despesas/static")
 )
 
 MEDIA_URL = '/media/'

@@ -5,6 +5,7 @@ from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from leite import utils
 from django.db.models import Q
+from django.http import Http404
 # Create your views here.
 
 
@@ -49,10 +50,13 @@ def alterar_chuvas(request, pk_id):
 def deletar_chuva(request, pk_id):
     if request.method == 'GET':
         chuva = get_object_or_404(Chuva, id=pk_id)
+        if request.user != chuva.usuario:
+            raise Http404("Você não tem permissao para deletar este conteúdo")
+        
         chuva.delete()
         return redirect('ger_chuvas')        
 
-
+@login_required
 def pesquisar_chuvas(request):
     if request.method == 'POST':
         pesquisa = request.POST.get('pesquisa')

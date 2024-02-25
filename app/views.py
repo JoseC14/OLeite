@@ -23,14 +23,15 @@ def home(request):
         ganho = Soma.objects.filter(usuario=request.user.id).aggregate(soma=Sum('total'))['soma']
         media = Leite.objects.filter(usuario=request.user.id).aggregate(media=Avg('quantidade'))['media']
         total_milimetros = Chuva.objects.filter(usuario=request.user.id).aggregate(soma=Sum('milimetros'))['soma']
-    
+        ultima_chuva = Chuva.objects.filter(usuario=request.user).last()
         return render(request,'home.html',
                       {'total_leite':total_leite,
                        'leite_entregue':leite_entregue,
                        'ganho':ganho,
                        'media':media,
                        'total_chuvas':total_chuvas,
-                       'total_milimetros':total_milimetros})
+                       'total_milimetros':total_milimetros,
+                       'ultima_chuva':ultima_chuva})
 
 @login_required  
 def dados_registro(request):
