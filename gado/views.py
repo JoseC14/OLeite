@@ -3,7 +3,10 @@ from django.shortcuts import render, get_object_or_404,redirect
 from .models import Gado
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.contrib.auth.decorators import login_required
 
+#CADASTRO DE GADO
+@login_required
 def cadastrar_gado(request):
     if request.method == 'GET':
         return render(request,'cadastrar_gado.html')
@@ -23,6 +26,8 @@ def cadastrar_gado(request):
             return render(request,'cadastrar_gado.html',{'msg_erro':'Gado já existe!'})
 
 
+#GERENCIAMENTO DE GADO
+@login_required
 def gerenciar_gado(request):
     if request.method == 'GET':
         gados = Gado.objects.filter(usuario=request.user.id).order_by('-nome')
@@ -33,7 +38,8 @@ def gerenciar_gado(request):
 
         return render(request,'gerenciar_gado.html',{'page': page})
 
-
+#ALTERAÇÃO DE GADO
+@login_required
 def alterar_gado(request, pk_id):
     gado = get_object_or_404(Gado,id=pk_id)
     if request.method == 'GET':
@@ -49,15 +55,16 @@ def alterar_gado(request, pk_id):
         gado.save()
         return redirect('ger_gado')
 
-
-
+#EXCLUSÃO DE GADO
+@login_required
 def deletar_gado(request, pk_id):
     if request.method == 'GET':
         gado = get_object_or_404(Gado,id=pk_id)
         gado.delete()
         return redirect('ger_gado')
 
-
+#PESQUISA DE GADO
+@login_required
 def pesquisar_gado(request):
     if request.method == 'POST':
         pesquisa = request.POST.get('pesquisa')

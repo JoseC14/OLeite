@@ -31,7 +31,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'chuva',
     'gado',
-    'despesa'
+    'despesa',
+    'relatorios'
 ]
 
 MIDDLEWARE = [

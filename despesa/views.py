@@ -2,7 +2,11 @@ from django.shortcuts import get_object_or_404, redirect, render
 from .models import Despesa
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.contrib.auth.decorators import login_required
 
+
+#CADASTRO DE DESPESAS
+@login_required
 def cad_despesa(request):
     if request.method == 'GET':
         return render(request,'cadastrar_despesa.html')
@@ -12,7 +16,9 @@ def cad_despesa(request):
                           usuario=request.user)
         despesa.save()
         return render(request,'cadastrar_despesa.html',{'msg_sucesso':'Despesa cadastrada!'})
-    
+
+#GERENCIAMENTO DE DESPESAS
+@login_required
 def ger_despesa(request):
     if request.method == 'GET':
         despesas = Despesa.objects.filter(usuario=request.user.id)
@@ -23,6 +29,8 @@ def ger_despesa(request):
 
         return render(request,'gerenciar_despesas.html',{'page': page})
 
+#ATUALIZAÇÃO DE DESPESA
+@login_required
 def upd_despesa(request,pk_id):
     despesa = get_object_or_404(Despesa,id=pk_id)
     if request.method == 'GET':
@@ -33,12 +41,16 @@ def upd_despesa(request,pk_id):
         despesa.save()
         return redirect('ger_despesas')
 
+#EXCLUSÃO DE DESPESAS
+@login_required
 def del_despesa(request,pk_id):
     if request.method == 'GET':
         despesa = get_object_or_404(Despesa,id=pk_id)
         despesa.delete()
         return redirect('ger_despesas')
-    
+
+#BUSCA POR DESPESAS
+@login_required
 def pes_despesa(request):
     if request.method == 'POST':
         pesquisa = request.POST.get('pesquisa')

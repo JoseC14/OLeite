@@ -1,0 +1,68 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<form action="{% url 'rel_gado' %}" method="POST">
+    {% csrf_token %}
+    <div class="container text-center mt-4">
+
+
+        <div class="col-sm-3">
+            <div class="mb-3">
+                <label for="quantidade" class="form-label">Nome</label>
+                <input name="nome" type="text" class=" form-control form-control-sm p-2" id="quantidade" placeholder="Nome do gado...">
+            </div>
+            <div class="mb-3">
+                <label for="quantidade" class="form-label">Tipo</label>
+                <select class="form-select"  onchange="checaLeitera()" name="tipo_gado"  id="tipo-gado">
+                    <option selected value="tudo">Tudo</option>
+                    <option value="boi">Boi</option>
+                    <option value="vaca"> Vaca</option>
+                    <option value="touro">Touro</option>
+                    <option value="garrote">Garrote</option>
+                    <option value="bezerro">Bezerro</option>
+                    <option value="bezerra">Bezerra</option>
+                </select>
+            </div>
+
+            <div class="mb-3 leitera" id="leitera">
+                <label for="quantidade" class="form-label">Leitera</label>
+                <input type="checkbox" name="leitera" class=" form-checkbox" id="leitera-check" placeholder="Data da entrega do leite...">
+            </div>
+
+            <button type="submit" class="btn btn-success">Consultar</button>
+        </div>
+
+    </div>
+</form>
+
+
+
+    {% if gado is not None %}
+    <form id="form-rel" action="{% url 'ger_rel' %}" method="POST" onsubmit="passaTabela()">
+        
+        {% csrf_token %}
+        <input type="hidden" name="tabela" id="content-table"> 
+        <button type="submit" class="btn btn-info ml-2">Gerar</button>
+        <div id="tabela"> 
+            <table class="table mt-3">
+                <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Nome</th>
+                    <th scope="col">Tipo</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for animal in gado  %}
+                        <tr>
+                            <th scope="row">{{animal.id}}</th>
+                            <td>{{animal.nome}}</td>
+                            <td>{{animal.tipo.capitalize}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </form>
+{% endif %}
+{% endblock %}

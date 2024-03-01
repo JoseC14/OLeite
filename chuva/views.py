@@ -6,9 +6,9 @@ from django.contrib.auth.decorators import login_required
 from leite import utils
 from django.db.models import Q
 from django.http import Http404
-# Create your views here.
 
 
+#CADASTRAR CHUVAS
 @login_required
 def cadastrar_chuva(request):
     if request.method == 'GET':
@@ -23,7 +23,7 @@ def cadastrar_chuva(request):
         except IntegrityError:
             return render(request,'cadastrar_chuva.html',{'msg_erro':'Erro! Data duplicada'})
 
-
+#GERENCIAR CHUVAS
 @login_required
 def gerenciar_chuvas(request):
     if request.method == 'GET':
@@ -33,7 +33,7 @@ def gerenciar_chuvas(request):
         page = chuva_paginator.get_page(page_num)
         return render(request,'gerenciar_chuvas.html',{'page': page})
     
-
+#ALTERAR CHUVAS
 @login_required
 def alterar_chuvas(request, pk_id):
     chuva = get_object_or_404(Chuva, id=pk_id)
@@ -45,7 +45,7 @@ def alterar_chuvas(request, pk_id):
         chuva.save()
         return redirect('ger_chuvas')
     
-
+#DELETAR CHUVAS
 @login_required
 def deletar_chuva(request, pk_id):
     if request.method == 'GET':
@@ -56,6 +56,7 @@ def deletar_chuva(request, pk_id):
         chuva.delete()
         return redirect('ger_chuvas')        
 
+#PESQUISAR CHUVAS
 @login_required
 def pesquisar_chuvas(request):
     if request.method == 'POST':

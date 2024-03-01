@@ -1,0 +1,81 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<form action="{% url 'rel_chuvas' %}" method="POST">
+    {% csrf_token %}
+    <div class="container text-center mt-4">
+
+
+        <div class="col-sm-3">
+            <div class="mb-3">
+                <label for="quantidade" class="form-label">Data</label>
+                <div class="row">
+                    <div class="col">
+                        <input name="data_de" type="date" class=" form-control form-control-sm p-2" id="data_de" placeholder="de...">
+                    </div>
+                   <div class="col">
+                        <input name="data_ate" type="date" class=" form-control form-control-sm p-2" id="data_ate" placeholder="até...">
+                   </div>
+                   
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="quantidade" class="form-label">Quantidade de Milimetros</label>
+                <div class="row">
+                    <div class="col">
+                        <input name="quant_de" type="number" class=" form-control form-control-sm p-2" id="quantidade_de" placeholder="de...">
+                    </div>
+                   <div class="col">
+                        <input name="quant_ate" type="number" class=" form-control form-control-sm p-2" id="quantidade_ate" placeholder="até...">
+                   </div>
+                   
+                </div>
+                
+            </div>
+            <p>OBS: Nem todos os campos precisam ser preenchidos, apenas o de data de inicio e fim!</p>
+            <button type="submit" class="btn btn-success">Consultar</button>
+        </div>
+
+    </div>
+</form>
+
+
+
+
+    {% if chuvas is not None %}
+    <form id="form-rel" action="{% url 'ger_rel' %}" method="POST" onsubmit="passaTabela()">
+        
+        {% csrf_token %}
+        <input type="hidden" name="tabela" id="content-table"> 
+        <button type="submit" class="btn btn-info ml-2">Gerar</button>
+        <div id="tabela"> 
+            <h3>RELATORIO DE CHUVAS REFERENTE A {{data_de}} ATÉ {{data_de}}</h3>
+            <p>Média de Milimetros: {{media.milimetros__avg}}</p>
+            <table class="table mt-3">
+                <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Quantidade</th>
+                    <th scope="col">Data</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for chuva in chuvas  %}
+                        <tr>
+                            <th scope="row">{{chuva.id}}</th>
+                            <td>{{chuva.milimetros}}</td>
+                            <td>{{chuva.data}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </form>
+{% endif %}
+
+{% if msg_erro is not None %}
+<div class="alert alert-danger mt-4 container text-center" role="alert">
+    {{ msg_erro }}
+</div> 
+{% endif %}
+{% endblock %}

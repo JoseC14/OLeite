@@ -14,6 +14,7 @@ urlpatterns = [
     path('leite/', include('leite.urls')),
     path('chuva/',include('chuva.urls')),
     path('despesa/',include('despesa.urls')), 
+    path('relatorios/',include('relatorios.urls')),
     path('registros/',views.dados_soma, name="dados_soma"),
     path('leites/', views.dados_registro, name='ver_reg'),
     path('chuvas/',views.dados_chuva, name='dados_chuva'),

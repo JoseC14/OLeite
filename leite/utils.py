@@ -16,3 +16,12 @@ def gerar_relatorio(template_src,context_dict=dict()):
 def formataData(data):
     date = datetime.strptime(data, '%d/%m/%Y')
     return datetime.strftime(date, '%Y-%m-%d')
+
+def checa_data_de_ate(data_de,data_ate):
+    data_inicio = datetime.strptime(data_de,'%Y-%m-%d')
+    data_fim = datetime.strptime(data_ate,'%Y-%m-%d')
+
+    if data_inicio > data_fim:
+        return True
+    else:
+        return False
