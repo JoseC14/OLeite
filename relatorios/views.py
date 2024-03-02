@@ -10,6 +10,7 @@ from despesa.models import Despesa
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.db.models import Avg
+from django.db.models import Sum
 
 
 @login_required
@@ -24,6 +25,8 @@ def rel_leite(request):
         preco_de = request.POST.get('preco_de')
         preco_ate = request.POST.get('preco_ate')
         
+        if not (data_de and data_ate):
+            return render(request,'relleite.html',{'msg_erro':'Data inicio e Data fim são obrigatórios!'})
         if utils.checa_data_de_ate(data_de,data_ate):
             return render(request,'relleite.html',{'msg_erro':'Data de inicio não pode ser maior que data de fim!'})
         query = Q(data__range=(data_de, data_ate)) & Q(usuario=request.user.id)
@@ -37,10 +40,12 @@ def rel_leite(request):
         
         leites = Leite.objects.filter(query)
         media = leites.aggregate(Avg("quantidade"))
+        total = leites.aggregate(Sum("quantidade"))
         return render(request,'relleite.html',{'leites':leites,
                                                'media':media,
                                                'data_de':data_de,
-                                               'data_ate':data_ate})
+                                               'data_ate':data_ate,
+                                               'total':total})
 
 @login_required
 def gerar_relatorio_leite(request):
@@ -65,6 +70,9 @@ def rel_chuvas(request):
         data_de = request.POST.get('data_de')
         data_ate = request.POST.get('data_ate')
 
+        if not (data_de and data_ate):
+            return render(request,'relchuva.html',{'msg_erro':'Data inicio e Data fim são obrigatórios!'})
+        
         if utils.checa_data_de_ate(data_de,data_ate):
             return render(request,'relchuva.html',{'msg_erro':'Data de inicio não pode ser maior que data de fim!'})
         query = Q(data__range=(data_de, data_ate)) & Q(usuario=request.user.id)
@@ -74,10 +82,12 @@ def rel_chuvas(request):
 
         chuvas = Chuva.objects.filter(query)
         media = chuvas.aggregate(Avg("milimetros"))
+        total = chuvas.aggregate(Sum("milimetros"))
         return render(request,'relchuva.html',{'chuvas':chuvas,
                                                'media':media,
                                                'data_de':data_de,
-                                               'data_ate':data_ate})
+                                               'data_ate':data_ate,
+                                               'total':total})
     
 @login_required
 def rel_gado(request):
@@ -119,6 +129,9 @@ def rel_despesa(request):
             query &= Q(gasto__range=(gasto_de,gasto_ate))
 
         despesas = Despesa.objects.filter(query)
-
-        return render(request,'reldespesa.html',{'despesas':despesas})
+        media = despesas.aggregate(Avg('gasto'))
+        total = despesas.aggregate(Sum('gasto'))
+        return render(request,'reldespesa.html',{'despesas':despesas,
+                                                 'media':media,
+                                                 'total':total})
        

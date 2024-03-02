@@ -11,10 +11,10 @@
                 <label for="quantidade" class="form-label">Data</label>
                 <div class="row">
                     <div class="col">
-                        <input name="data_de" type="date" class=" form-control form-control-sm p-2" id="data_de" placeholder="de...">
+                        <input name="data_de" required type="date" class=" form-control form-control-sm p-2" id="data_de" placeholder="de...">
                     </div>
                    <div class="col">
-                        <input name="data_ate" type="date" class=" form-control form-control-sm p-2" id="data_ate" placeholder="até...">
+                        <input name="data_ate" required type="date" class=" form-control form-control-sm p-2" id="data_ate" placeholder="até...">
                    </div>
                    
                 </div>
@@ -51,6 +51,7 @@
         <div id="tabela"> 
             <h3>RELATORIO DE CHUVAS REFERENTE A {{data_de}} ATÉ {{data_de}}</h3>
             <p>Média de Milimetros: {{media.milimetros__avg}}</p>
+            <p>Total de Milimetros: {{total.milimetros__sum}}</p>
             <table class="table mt-3">
                 <thead>
                 <tr>

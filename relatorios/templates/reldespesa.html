@@ -11,7 +11,7 @@
                 <label for="quantidade" class="form-label">Motivo</label>
                 <div class="row">
                     <div class="col">
-                        <input name="motivo" type="text" class=" form-control form-control-sm p-2" id="quantidade_de" placeholder="de...">
+                        <input name="motivo" type="text" class=" form-control form-control-sm p-2" id="quantidade_de" placeholder="Motivo...">
                     </div>
                 </div>
                 
@@ -46,6 +46,8 @@
         <input type="hidden" name="tabela" id="content-table"> 
         <button type="submit" class="btn btn-info ml-2">Gerar</button>
         <div id="tabela"> 
+            <p>Media de Gasto: {{media.gasto__avg}}</p>
+            <p>Total Gasto: {{total.gasto__sum}}</p>
             <table class="table mt-3">
                 <thead>
                 <tr>

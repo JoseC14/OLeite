@@ -14,6 +14,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
 
+#CADASTRO DE LEITES
 @login_required
 def cadastrar_leite(request):
     if request.method == 'GET':
@@ -28,7 +29,7 @@ def cadastrar_leite(request):
             leite.save()
             return render(request,'cadastrar_leite.html', {'msg_sucesso':'Entrega cadastrada!'})
 
-
+#GERENCIAMENTO DE LEITE
 @login_required
 def gerenciar_leite(request):
     if request.method == 'GET':
@@ -40,6 +41,7 @@ def gerenciar_leite(request):
 
         return render(request,'gerenciar_leite.html',{'page': page})
 
+#SOMAR OS LEITES
 @login_required
 def somar_leite(request):
     if request.method == 'GET':
@@ -66,13 +68,15 @@ def somar_leite(request):
                                             'de':de,
                                             'ate':ate})
     
+#EXCLUSÃO DE LEITES
 @login_required
 def deletar_leite(request,pk_id):
     if request.method == 'GET':
         leite = get_object_or_404(Leite, id=pk_id, usuario=request.user.id)
         leite.delete()
         return redirect('ger_leite')
-    
+
+#ALTERAÇÃO DE LEITE
 @login_required
 def alterar_leite(request,pk_id):
     
@@ -88,6 +92,7 @@ def alterar_leite(request,pk_id):
         leite.save()    
         return redirect('ger_leite')
 
+#PESQUISA DE REGISTROS DE LEITES
 @login_required
 def pesquisar_leite(request):
     if request.method == 'POST':
@@ -125,6 +130,8 @@ def pesquisar_leite(request):
 
         return render(request,'gerenciar_leite.html',{'page': page})
     
+
+#CADASTRO DE SOMAS
 @login_required
 def cadastrar_soma(request):
     if request.method == 'POST':
@@ -148,6 +155,8 @@ def cadastrar_soma(request):
         
         return render(request,'somar.html',{'msg_sucesso':'Registrado!'})
 
+
+#SOMAS
 @login_required
 def somas(request):
     if request.method == 'GET':        
@@ -170,25 +179,25 @@ def somas(request):
                                             Q(total__contains=data_pesquisa) |
                                             Q(preco_litro__contains=pesquisa) |
                                             Q(data_inicio__contains=data_pesquisa) |
-                                            Q(data_fim__contains=data_pesquisa) |
+                                            Q(data_fim__contains=data_pesquisa) &
                                             Q(usuario=request.user.id))
             elif tipo_pesquisa == 'id':
-                somas = Soma.objects.filter(Q(id__contains=pesquisa) | Q(usuario=request.user.id))
+                somas = Soma.objects.filter(Q(id__contains=pesquisa) & Q(usuario=request.user.id))
             elif tipo_pesquisa == 'quantidade':
-                somas = Soma.objects.filter(Q(quantidade__contains=pesquisa) | Q(usuario=request.user.id))
+                somas = Soma.objects.filter(Q(quantidade__contains=pesquisa) & Q(usuario=request.user.id))
             elif tipo_pesquisa == 'total':
-                somas = Soma.objects.filter(Q(total__contains=pesquisa) | Q(usuario=request.user.id))
+                somas = Soma.objects.filter(Q(total__contains=pesquisa) & Q(usuario=request.user.id))
             elif tipo_pesquisa == 'preco':
-                somas = Soma.objects.filter(Q(preco_litro__contains=pesquisa) | Q(usuario=request.user.id))
+                somas = Soma.objects.filter(Q(preco_litro__contains=pesquisa) & Q(usuario=request.user.id))
             elif tipo_pesquisa == 'data_inicio':
-                somas = Soma.objects.filter(Q(data_inicio__contains=data_pesquisa) | Q(usuario=request.user.id))
+                somas = Soma.objects.filter(Q(data_inicio__contains=data_pesquisa) & Q(usuario=request.user.id))
             elif tipo_pesquisa == 'data_fim':
-                somas = Soma.objects.filter(Q(data_fim__contains=data_pesquisa) | Q(usuario=request.user.id))
+                somas = Soma.objects.filter(Q(data_fim__contains=data_pesquisa) & Q(usuario=request.user.id))
         
         return render(request,'somas.html',{'somas':somas})
     
 
-
+#DELETAR SOMAS
 @login_required
 def deletar_soma(request, pk_id):
     
@@ -201,6 +210,8 @@ def deletar_soma(request, pk_id):
     soma.delete() 
     return redirect('somas')
 
+
+#GERAÇÃO DE RELATÓRIOS
 @login_required
 def gerar_relatorio(request):
 
