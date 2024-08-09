@@ -1,0 +1,26 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<form action="{% url 'redefinir_senha' %}" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="email" value="{{email}}">
+    <div class="mb-3">
+        <label class="form-label">Senha *</label>
+        <input required type="password" oninput="checaSenha(event)" name="senha"class=" form-control form-control-sm p-2" id="senha" placeholder="Sua senha...">
+        <ul class="req_senha">
+            <li id="minuscula">Ao menos uma letra minúscula</li>
+            <li id="maiuscula">Ao menos uma letra maiúscula</li>
+            <li id="especial">Um caractere especial(#, $, %, etc)</li>
+            <li id="numero">Ao menos um número </li>
+            <li id="oito"> Ao menos 8 caracteres </li>
+            
+        </ul>
+    </div>
+    <div class="mb-3">
+        <label for="quantidade"  class="form-label">Confirmar Senha *</label>
+        <input required type="password" name="confirmar_senha" oninput="checaSenha(event)" class=" form-control form-control-sm p-2" id="confirmar_senha" placeholder="Confirme sua senha...">
+    </div>
+    <button type="submit" id="botao-form" class="btn btn-info disabled">Redefinir</button>
+</form>
+{% endblock %}

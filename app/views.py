@@ -9,9 +9,11 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
-from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
-
+from django.core.mail import send_mail
+from .models import PassRecovery
+from django.shortcuts import get_object_or_404
+import random
 #VIEW DA HOME
 @login_required
 def home(request):
@@ -86,8 +88,14 @@ def criar_usuario(request):
         usuario = request.POST.get('usuario')
         email = request.POST.get('email')
         senha = request.POST.get('senha')
-        if primeiro_nome or segundo_nome is None:
-           return render(request,'cadastrar_usuario.html',{'msg_erro':'Erro! Campos não preenchidos'})
+        has_user = User.objects.filter(username=usuario)
+        has_email = User.objects.filter(email=email)
+
+        if has_user.exists():
+            return render(request,'cadastrar_usuario.html',{'msg_erro':'Nome de usuário já cadastrado!'})
+        if has_email.exists():
+            return render(request,'cadastrar_usuario.html',{'msg_erro':'Email já cadastrado!'})
+
         try:
             user = User.objects.create_user(
                 username=usuario,
@@ -99,5 +107,50 @@ def criar_usuario(request):
             user.save()
             return render(request,'login.html',{'msg_sucesso':'Você se cadastrou com sucesso! Use seu usuário e senha para continuar'})
         except ValueError:
-            return render(request,'cadastrar_usuario.html',{'msg_erro':'Erro! Campos não preenchidos'})
-        
+            return render(request,'cadastrar_usuario.html',{'msg_erro':'Erro'})
+
+def inserir_email(request):
+    if request.method == 'GET':
+        return render(request,'inseriremail.html')
+    
+def enviar_codigo(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        recovery_code = ""
+        for x in range(0,6):
+            recovery_code += str(random.randint(0,9))
+
+        pass_recovery = PassRecovery(code=recovery_code,email=email)
+        pass_recovery.save()
+
+        send_mail(
+            "Recuperação de Senha",
+            f"Seu código de recuperação:{recovery_code}",
+            "josecarlosv8474@gmail.com",
+            [email]
+        )
+
+        return render(request,'recuperarsenha.html',{'codigo':recovery_code,'email':email})
+
+def recuperar_conta(request):
+    if request.method == 'POST':
+        codigo_user = request.POST.get('codigo_user')
+        email = request.POST.get('email')
+        pass_recovery = PassRecovery.objects.filter(code=codigo_user,email=email)
+        if pass_recovery.exists():
+            return render(request,'redefinirsenha.html',{'email':email})
+
+def redefinir_senha(request):
+    if request.method == 'POST':
+        senha = request.POST.get('senha')
+        email = request.POST.get('email')
+        try:
+            senha_usuario = User.objects.get(email=email)   
+            senha_usuario.set_password(senha)
+            senha_usuario.save()
+            codigo = PassRecovery.objets.get(email=email)
+            codigo.delete()
+        except Exception as e:
+            print(e)
+        return render(request,'login.html',{'msg_sucesso':'Senha alterada com sucesso!'})
+    

@@ -13,5 +13,5 @@ urlpatterns = [
     path('somas/',views.somas,name='somas'),
     path('deletarsoma/<int:pk_id>', views.deletar_soma, name='del_registro'),
     path('gerarelatorio/',views.gerar_relatorio, name="ger_rel"),
-
+    path('importarplanilha',views.importar_planilha, name='import_sheet')
 ]

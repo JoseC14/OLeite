@@ -14,16 +14,23 @@
             </div>
             <div class="mb-3">
                 <label for="quantidade" class="form-label">Senha</label>
-                <input required type="text" name="senha"class=" form-control form-control-sm p-2" id="quantidade" placeholder="Sua senha...">
+                <input required type="password" name="senha"class=" form-control form-control-sm p-2" id="quantidade" placeholder="Sua senha...">
             </div>
             <button type="submit" class="btn btn-success">Entrar</button>
         </div>
 
     </div>
 </form>
+
 <div class="text-center d-flex justify-content-center">
+    <a href="{% url 'inserir_email' %}" >Esqueci minha senha</a>
+</div>
+
+<div class="text-center d-flex justify-content-center mt-3">
     <a href="{% url 'cad_usuario' %}" >Não tem usuário? Cadastre-se</a>
 </div>
+
+
 
 
 {% if msg_sucesso != None %}

@@ -12,7 +12,7 @@ from django.core.paginator import Paginator
 from django.db.models import Avg
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-
+import pandas as pd
 
 #CADASTRO DE LEITES
 @login_required
@@ -130,6 +130,25 @@ def pesquisar_leite(request):
 
         return render(request,'gerenciar_leite.html',{'page': page})
     
+@login_required
+def importar_planilha(request):
+    if request.method == 'GET':
+        return render(request,'importar_planilha.html')
+    elif request.method == 'POST':
+        print(request.FILES)
+        sheet = pd.read_csv(request.FILES.get('sheet'))
+        
+        for index,row in sheet.iterrows():
+            
+            leite = Leite(quantidade=row.quantidade,data=row.data, 
+                          usuario=request.user)
+            leite.save()
+
+        return render(request,'importar_planilha.html', {'msg_sucesso':'Planilha importada!'})
+
+
+
+
 
 #CADASTRO DE SOMAS
 @login_required
